@@ -1,0 +1,30 @@
+{
+  "name": "wine-sense-ui",
+  "version": "1.0.0",
+  "description": "Wine Sense UI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gilphilbert/wine-sense-ui.git"
+  },
+  "author": "gilphilbert",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gilphilbert/wine-sense-ui/issues"
+  },
+  "homepage": "https://github.com/gilphilbert/wine-sense-ui#readme",
+  "dependencies": {
+    "vue": "^2.6.12"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^4.5.13",
+    "pug": "^3.0.2",
+    "pug-plain-loader": "^1.1.0",
+    "vue-template-compiler": "^2.6.12"
+  }
+}
