@@ -8,6 +8,8 @@ import Account from './components/Account.vue'
 
 Vue.use(VueRouter)
 
+Vue.prototype.bluetooth = window.navigator.bluetooth;
+
 const routes = [
   { path: '/', component: Dashboard },
   { path: '/sensors', component: Sensors },

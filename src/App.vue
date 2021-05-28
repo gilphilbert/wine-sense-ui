@@ -13,9 +13,7 @@
         li
           router-link(to="/logout") Logout
     div#main
-      nav#topbar
-      div#content
-        router-view
+      router-view
 </template>
 <script>
 export default {
@@ -31,6 +29,15 @@ export default {
 
 </script>
 <style lang="sass">
+$success: #15A083
+$warning: #ECA72C
+$danger: #DE6B48
+$dark-blue: #354052
+$lightest-grey: #EBEEF3
+$shadow-color: #dddddd
+$default-shadow: 0px 1px 3px 1px #dddddd
+$disabled: #c9ccd1
+
 html
   background-color: #ebeef3
   font-family: 'Lexend', sans-serif
@@ -47,7 +54,7 @@ h1, h2, h3, h4, h5, h6
 
 #menubar
   z-index: 1
-  background-color: #354052
+  background-color: $dark-blue
   color: white
   min-width: 250px
   height: 100vh
@@ -66,7 +73,7 @@ h1, h2, h3, h4, h5, h6
       text-decoration: none
       padding: 17px 0 17px 35px
       &.router-link-exact-active
-        border-color: #15a083
+        border-color: $success
     &:hover
       background: #51677d
       border-color: #51677d
@@ -75,13 +82,6 @@ h1, h2, h3, h4, h5, h6
 
 #main
   flex: 1
-
-nav#topbar
-  height: 70px
-  width: 100%
-  background: #ffffff
-  -webkit-box-shadow: 0px 1px 3px 1px #dddddd;
-  box-shadow: 0px 1px 3px 1px #dddddd;
 
 #content
   padding: 20px 10px
@@ -93,6 +93,43 @@ nav#topbar
   background-color: #fff
   height: 250px
   border-radius: 5px
-  -webkit-box-shadow: 0px 1px 3px 1px #dddddd;
-  box-shadow: 0px 1px 3px 1px #dddddd;
+  -webkit-box-shadow: $default-shadow
+  box-shadow: $default-shadow
+
+div.message
+  font-size: 15px
+  margin: 10px
+  padding: 6px 15px 15px 15px
+  background: #fff
+  border-radius: 5px
+  border: 1px solid #dadce0
+  h1
+    font-size: 1.1rem
+  &.is-warning
+    background-color: $warning
+    border-color: $warning
+    color: #fff
+    a
+      color: #fff
+  &.is-danger
+    background-color: $danger
+    border-color: $danger
+    color: #fff
+    a
+      color: #fff
+
+a.button, button.button
+  border: none
+  background-color: $success
+  color: #fff
+  padding: 9px 15px
+  border-radius: 5px
+  cursor: pointer
+  font-weight: 600
+  transition: background 150ms ease
+  &:hover
+    background-color: #18b896
+  &:disabled
+    background-color: $disabled!important
+    cursor: unset
 </style>

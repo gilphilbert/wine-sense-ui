@@ -19,7 +19,10 @@
   },
   "homepage": "https://github.com/gilphilbert/wine-sense-ui#readme",
   "dependencies": {
+    "@types/web-bluetooth": "0.0.9",
+    "chart.js": "^2.9.4",
     "vue": "^2.6.12",
+    "vue-chartjs": "^3.5.1",
     "vue-router": "^3.5.1"
   },
   "devDependencies": {
