@@ -7,6 +7,7 @@ import Sensors from './components/Sensors.vue'
 import Account from './components/Account.vue'
 
 Vue.use(VueRouter)
+Vue.use(require('vue-chartist'))
 
 Vue.prototype.bluetooth = window.navigator.bluetooth;
 

@@ -2,6 +2,9 @@ module.exports = {
   devServer: {
     port: "8080",
     host: "0.0.0.0",
-    //https: true
+    //https: true,
+    after: function (app) {
+      const private = require('./api')(app)
+    },
   }
 }
