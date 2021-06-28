@@ -68,7 +68,7 @@ export default {
       sensors: [ ],
       btData: {
         networks: [
-          { ssid: 'Glibertvue', strength: 3, security: 2 }, { ssid: 'SnowBaby', strength: 2, security: 2 }, { ssid: 'Xfinity', strength: 1, security: 0 }
+           //{ ssid: 'Glibertvue', strength: 3, security: 2 }, { ssid: 'SnowBaby', strength: 2, security: 2 }, { ssid: 'Xfinity', strength: 1, security: 0 }
         ],
         characteristic: null,
         identifier: ''
@@ -76,7 +76,8 @@ export default {
       addSensorData: {
         ssid: '',
         key: ''
-      }
+      },
+      device_id_char: null
     }
   },
   created () {
@@ -100,10 +101,11 @@ export default {
         filters: [{
           name: 'Wine Sense'
         }],
-        optionalServices: [ SERVICE_UUID, DEVICE_IDENTIFIER_UUID ]
+        optionalServices: [ SERVICE_UUID ]
       })
       const server = await device.gatt.connect()
       const service = await server.getPrimaryService(SERVICE_UUID)
+      console.log(service)
       let characteristic = await service.getCharacteristic(MAIN_CHARACTERISTIC_UUID)
       await characteristic.startNotifications()
       characteristic.addEventListener('characteristicvaluechanged', evt => {
@@ -115,6 +117,7 @@ export default {
             console.log('Password incorrect / unable to connect')
           } else {
             console.log('Success!')
+            this.addDevice()
           }
         } else {
           console.log('Unknown error')
@@ -133,7 +136,7 @@ export default {
       this.btData.characteristic = characteristic
       this.btData.networks = nets
 
-      characteristic = await service.getCharacteristic(DEVICE_IDENTIFIER_UUID)
+      this.device_id_char = await service.getCharacteristic(DEVICE_IDENTIFIER_UUID)
       value = await characteristic.readValue()
       this.btData.identifier = decoder.decode(value)
     },
@@ -143,14 +146,11 @@ export default {
     connectWiFi () {
       let msgBody = JSON.stringify({ ssid: this.addSensorData.ssid, key: this.addSensorData.key })
       console.log(msgBody)
-      //let buf = new ArrayBuffer(msgBody.length * 2)
-      //var bufView = new Uint16Array(buf)
-      //for (var i=0, strLen=msgBody.length; i < strLen; i++) {
-      //  bufView[i] = msgBody.charCodeAt(i);
-      //}
-      //console.log(bufView)
-      //this.btData.characteristic.writeValue(bufView)
       this.btData.characteristic.writeValue(new TextEncoder().encode(msgBody+"\n"))
+    },
+    addDevice () {
+      // adding device
+      console.log('Adding device to server')
     }
   }
 }

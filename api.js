@@ -47,6 +47,7 @@ module.exports = app => {
         model: {
           'id:uuid': { pk: true },
           'user:string': {},
+          'otp:string': {},
           'secret:string': {},
           'added:int': {},
           'sensors:array': [],
@@ -70,9 +71,9 @@ module.exports = app => {
     //})
   })
 
-  app.put('/api/sensor', function (req, res) {
+  app.post('/api/device', function (req, res) {
     console.log(req.body)
-    // adds a new sensor
+    // adds a new device (with multiple sensors)
     const id = req.body.id
     const user = req.body.user
 
@@ -85,12 +86,39 @@ module.exports = app => {
     nSQL('devices').query('upsert', [{
       id: id,
       user: user,
-      secret: secret,
+      otp: secret,
+      secret: '',
       sensors: [],
       registered: false
     }]).exec().then(() => {
-      res.json({ secret: secret })
+      res.json({ user: user, otp: secret })
     })
+  })
+  app.post('/api/device/register', function (req, res) {
+    // device is self-registering
+    const id = req.body.id
+    const otp = req.body.otp
+    nSQL('devices')
+      .query('select', [ 'devices' ])
+      .where([ 'id', '=', id ])
+      .exec()
+      .then(rows => {
+        if (rows.length === 1) {
+          const dev = rows[0]
+          const crypto = require('crypto')
+          let sum = crypto.createHash('md5').update(id + Date.now())
+          dev.secret = sum.digest('hex')
+          if (dev.otp === otp) {
+            dev.otp = ''
+            nSQL('devices')
+              .query('update', [dev])
+              .where([ 'id', '=', id ])
+              .exec().then(() => {
+                res.json({ secret: secret })
+              })
+          }
+        }
+      })
   })
 
   app.post('/api/reading', function (req, res) {
