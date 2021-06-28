@@ -71,6 +71,9 @@ module.exports = app => {
         console.log(rows)
       })
       nSQL('devices').query('select').exec().then(rows => {
+        console.log(  rows)
+      })
+      nSQL('readings').query('select').exec().then(rows => {
         console.log(rows)
       })
     /*
@@ -144,9 +147,9 @@ module.exports = app => {
             keys.forEach(key => {
               nSQL('readings')
                 .query('upsert', [{
-                  id: req.body['id'],
+                  uuid: req.body['id'],
                   sensor: key,
-                  reading: req.body[key],
+                  reading: req.body.readings[key],
                   date: now
                 }])
                 .exec()
