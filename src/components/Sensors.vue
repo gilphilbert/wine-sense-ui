@@ -137,7 +137,8 @@ export default {
       this.btData.networks = nets
 
       this.device_id_char = await service.getCharacteristic(DEVICE_IDENTIFIER_UUID)
-      value = await characteristic.readValue()
+      value = await this.device_id_char.readValue()
+      console.log("id", decoder.decode(value))
       this.btData.identifier = decoder.decode(value)
     },
     setWiFi (e) {
@@ -151,6 +152,30 @@ export default {
     addDevice () {
       // adding device
       console.log('Adding device to server')
+      const bd = JSON.stringify({
+          id: this.btData.identifier,
+          user: '9091a5c8-a382-4449-91c5-a4aa87b1cb62'
+        })
+      console.log(bd)
+      fetch( '/api/device', {
+        method: 'post',
+        body: bd,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          let msgBody = JSON.stringify({
+            user: '9091a5c8-a382-4449-91c5-a4aa87b1cb62',
+            otp: data.otp,
+            url: window.location.origin + '/api/device/register',
+            endpoint: window.location.origin
+          })
+
+          this.device_id_char.writeValue(new TextEncoder().encode(msgBody+"\n"))
+        })
     }
   }
 }

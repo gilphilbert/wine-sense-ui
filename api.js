@@ -56,23 +56,29 @@ module.exports = app => {
       }
     ],
   }).then(() => {
-    //nSQL('users').query('upsert', [{
-    //  email: 'test@test.com',
-    //  name: 'phill',
-    //  password: 'password',
-    //  joined: Date.now()
-    //}]).exec().then(() => {
+    /*
+    nSQL('users').query('upsert', [{
+      email: 'test@test.com',
+      name: 'phill',
+      password: 'password',
+      joined: Date.now()
+    }]).exec().then(() => {
+    */
+      //nSQL('devices').query('delete').where(['id','=','AC1CC4']).exec()
+      //nSQL('readings').query('delete').where(['id','=','AC1CC4']).exec()
+      
       nSQL('users').query('select').exec().then(rows => {
         console.log(rows)
       })
       nSQL('devices').query('select').exec().then(rows => {
         console.log(rows)
       })
-    //})
+    /*
+    })
+    */
   })
 
   app.post('/api/device', function (req, res) {
-    console.log(req.body)
     // adds a new device (with multiple sensors)
     const id = req.body.id
     const user = req.body.user
@@ -91,15 +97,17 @@ module.exports = app => {
       sensors: [],
       registered: false
     }]).exec().then(() => {
-      res.json({ user: user, otp: secret })
+      res.json({ status: 'success', otp: secret })
     })
   })
   app.post('/api/device/register', function (req, res) {
     // device is self-registering
+    console.log(req.body)
     const id = req.body.id
     const otp = req.body.otp
+    const user = req.body.user
     nSQL('devices')
-      .query('select', [ 'devices' ])
+      .query('select')
       .where([ 'id', '=', id ])
       .exec()
       .then(rows => {
@@ -108,13 +116,14 @@ module.exports = app => {
           const crypto = require('crypto')
           let sum = crypto.createHash('md5').update(id + Date.now())
           dev.secret = sum.digest('hex')
-          if (dev.otp === otp) {
+          dev.registered = true
+          if (dev.user == user && dev.otp === otp) {
             dev.otp = ''
             nSQL('devices')
-              .query('update', [dev])
+              .query('upsert', [dev])
               .where([ 'id', '=', id ])
               .exec().then(() => {
-                res.json({ secret: secret })
+                res.json({ secret: dev.secret })
               })
           }
         }
@@ -124,13 +133,13 @@ module.exports = app => {
   app.post('/api/reading', function (req, res) {
     console.log(req.body)
     nSQL('devices')
-      .query('select', [ 'devices' ]).where([ 'id', '=', req.body.id]).exec()
+      .query('select').where([ 'id', '=', req.body.id]).exec()
       .then(rows => {
         if (rows.length > 0) {
           const row = rows[0]
           if (row.secret === req.body.secret) {
             // the device ID and user match
-            const keys = Object.keys(req.body)
+            const keys = Object.keys(req.body.readings)
             const now = Date.now()
             keys.forEach(key => {
               nSQL('readings')
