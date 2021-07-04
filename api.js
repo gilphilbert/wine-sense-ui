@@ -25,7 +25,7 @@ module.exports = app => {
         name: 'readings',
         model: {
           'id:uuid': { pk: true, ai: true },
-          'uuid:string': {}, // this is the esp32 mac address
+          'devid:string': {}, // this is the esp32 mac address
           'sensor:string': {}, // this is the sensor attached (0-2)
           'date:int': {},
           'reading:obj': {
@@ -45,7 +45,7 @@ module.exports = app => {
       {
         name: 'devices',
         model: {
-          'id:uuid': { pk: true },
+          'id:string': { pk: true },
           'user:string': {},
           'otp:string': {},
           'secret:string': {},
@@ -67,15 +67,15 @@ module.exports = app => {
       //nSQL('devices').query('delete').where(['id','=','AC1CC4']).exec()
       //nSQL('readings').query('delete').where(['id','=','AC1CC4']).exec()
       
-      nSQL('users').query('select').exec().then(rows => {
-        console.log(rows)
-      })
+      //nSQL('users').query('select').exec().then(rows => {
+      //  console.log(rows)
+      //})
       nSQL('devices').query('select').exec().then(rows => {
         console.log(  rows)
       })
-      nSQL('readings').query('select').exec().then(rows => {
-        console.log(rows)
-      })
+      //nSQL('readings').query('select').exec().then(rows => {
+      //  console.log(rows)
+      //})
     /*
     })
     */
@@ -147,7 +147,7 @@ module.exports = app => {
             keys.forEach(key => {
               nSQL('readings')
                 .query('upsert', [{
-                  uuid: req.body['id'],
+                  devid: req.body['id'],
                   sensor: key,
                   reading: req.body.readings[key],
                   date: now
@@ -162,10 +162,35 @@ module.exports = app => {
       })
   })
 
-  app.get('/api/latest', function (req, res) {
-    nSQL('readings').query('select').exec().then(rows => {
-      res.json(rows)
-    })
+  app.get('/api/readings', function (req, res) {
+    nSQL('readings')
+      .query('select')
+      .exec().then(rows => {
+        res.json(rows)
+      })
+  })
+
+  app.get('/api/readings/:device', function (req, res) {
+    nSQL('readings')
+      .query('select')
+      .where(['devid', '=', req.query.device])
+      .orderBy(["date DESC", "uuid ASC"])
+      .limit(20)
+      .exec().then(rows => {
+        res.json(rows)
+      })
+  })
+
+  app.get('/api/readings/:device/:sensor', function (req, res) {
+    nSQL('readings')
+      .query('select')
+      .where(['devid', '=', req.query.device])
+      .where(['sensor', '=', req.query.sensor])
+      .orderBy(["date DESC", "uuid ASC"])
+      .limit(20)
+      .exec().then(rows => {
+        res.json(rows)
+      })
   })
 
 }
