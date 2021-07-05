@@ -63,20 +63,31 @@ module.exports = app => {
       password: 'password',
       joined: Date.now()
     }]).exec().then(() => {
-    */
       //nSQL('devices').query('delete').where(['id','=','AC1CC4']).exec()
       //nSQL('readings').query('delete').where(['id','=','AC1CC4']).exec()
       
-      //nSQL('users').query('select').exec().then(rows => {
-      //  console.log(rows)
-      //})
-      nSQL('devices').query('select').exec().then(rows => {
-        console.log(  rows)
+      nSQL('users').query('select').exec().then(rows => {
+        console.log(rows)
       })
+      */
+     /*
+      nSQL('devices').query('upsert', [{
+        id: '5F0EE8',
+        user: '5f872b1c-4139-4208-bc2d-269b7e62ac55',
+        otp: '',
+        secret: 'c8f17a299f9dfb1ee42dd7d0244357d4',
+        sensors: [],
+        registered: true
+      }]).exec().then(() => {
+        nSQL('devices').query('select').exec().then(rows => {
+          console.log(rows)
+        })
+      })
+*/
       //nSQL('readings').query('select').exec().then(rows => {
       //  console.log(rows)
       //})
-    /*
+      /*
     })
     */
   })
@@ -92,16 +103,12 @@ module.exports = app => {
     let sum = crypto.createHash('md5').update(id + Date.now())
     const secret = sum.digest('hex')
 
-    nSQL('devices').query('upsert', [{
-      id: id,
-      user: user,
-      otp: secret,
-      secret: '',
-      sensors: [],
-      registered: false
-    }]).exec().then(() => {
-      res.json({ status: 'success', otp: secret })
-    })
+    nSQL('devices')
+      .query('select', ['id', 'sensors', 'registered'])
+      .exec()
+      .then(() => {
+        res.json({ status: 'success', otp: secret })
+      })
   })
   app.post('/api/device/register', function (req, res) {
     // device is self-registering
@@ -162,20 +169,33 @@ module.exports = app => {
       })
   })
 
+  app.get('/api/devices', function (req, res) {
+    nSQL('devices')
+      .query('select', ['id', 'user', 'sensors', 'registered'])
+      .exec().then(rows => {
+        res.json(rows)
+      })
+  })
+
   app.get('/api/readings', function (req, res) {
     nSQL('readings')
       .query('select')
+      .orderBy(["date DESC"])
+      .limit(20)
+      .orderBy(["date ASC"])
       .exec().then(rows => {
         res.json(rows)
       })
   })
 
   app.get('/api/readings/:device', function (req, res) {
+    console.log(req.params.device);
     nSQL('readings')
       .query('select')
-      .where(['devid', '=', req.query.device])
-      .orderBy(["date DESC", "uuid ASC"])
+      .where(['devid', '=', req.params.device])
+      .orderBy(["date DESC"])
       .limit(20)
+      .orderBy(["date ASC"])
       .exec().then(rows => {
         res.json(rows)
       })
@@ -184,10 +204,11 @@ module.exports = app => {
   app.get('/api/readings/:device/:sensor', function (req, res) {
     nSQL('readings')
       .query('select')
-      .where(['devid', '=', req.query.device])
-      .where(['sensor', '=', req.query.sensor])
-      .orderBy(["date DESC", "uuid ASC"])
+      .where(['devid', '=', req.params.device])
+      .where(['sensor', '=', req.params.sensor])
+      .orderBy(["date DESC"])
       .limit(20)
+      .orderBy(["date ASC"])
       .exec().then(rows => {
         res.json(rows)
       })

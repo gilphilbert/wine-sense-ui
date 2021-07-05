@@ -24,6 +24,7 @@
     "@types/web-bluetooth": "0.0.9",
     "body-parser": "^1.19.0",
     "chart.js": "^2.9.4",
+    "chartist-plugin-legend": "^0.6.2",
     "express": "^4.17.1",
     "vue": "^2.6.12",
     "vue-chartist": "^2.3.1",

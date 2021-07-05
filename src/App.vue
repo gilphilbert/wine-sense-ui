@@ -146,6 +146,9 @@ h1, h2, h3, h4, h5, h6
 
 .row
   margin: 0
+  margin-bottom: 16px
+  &:last-child
+    margin-bottom: 0
 
 .card
   box-sizing: border-box
@@ -153,6 +156,7 @@ h1, h2, h3, h4, h5, h6
   height: 300px
   border-radius: 10px
   padding: 10px
+  overflow-y: hidden
   &.has-chart
     width: 100%!important
     max-width: 100%
@@ -215,4 +219,47 @@ a.button, button.button
 
 .nogrow
   flex-grow: 0
+
+$ct-series-colors: (#d70206, #f05b4f, #f4c63d, #d17905, #453d3f, #59922b, #0544d3, #6b0392, #f05b4f, #dda458, #eacf7d, #86797d, #b2c326, #6188e2, #a748ca) !default
+
+.ct-legend 
+  position: relative
+  z-index: 10
+
+  margin: 0
+  padding: 0
+
+  li
+    display:block
+    position: relative
+    //padding-left: 23px
+    margin-bottom: 3px
+
+  li:before
+    width: 12px
+    height: 12px
+    position: absolute
+    left: 0
+    content: ''
+    border: 3px solid transparent
+    border-radius: 2px
+  
+
+  li.inactive:before 
+    background: transparent
+  
+
+  &.ct-legend-inside 
+    position: absolute
+    top: 0
+    right: 0
+  
+
+  @for $i from 0 to length($ct-series-colors) 
+    .ct-series-#{$i}:before
+      background-color: nth($ct-series-colors, $i + 1)
+      border-color: nth($ct-series-colors, $i + 1)
+        
+    
+
 </style>
