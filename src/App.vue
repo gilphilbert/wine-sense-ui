@@ -153,16 +153,10 @@ h1, h2, h3, h4, h5, h6
 .card
   box-sizing: border-box
   background-color: #fff
-  height: 300px
   border-radius: 10px
   padding: 10px
-  overflow-y: hidden
-  &.has-chart
-    width: 100%!important
-    max-width: 100%
-    &>div
-      position: relative
-      height: 100%
+  &.has-chart>div
+    margin-bottom: 20px
 
 div.message
   font-size: 15px
@@ -230,9 +224,9 @@ $ct-series-colors: (#d70206, #f05b4f, #f4c63d, #d17905, #453d3f, #59922b, #0544d
   padding: 0
 
   li
-    display:block
+    display: inline-block
     position: relative
-    //padding-left: 23px
+    padding-left: 23px
     margin-bottom: 3px
 
   li:before
@@ -260,6 +254,7 @@ $ct-series-colors: (#d70206, #f05b4f, #f4c63d, #d17905, #453d3f, #59922b, #0544d
       background-color: nth($ct-series-colors, $i + 1)
       border-color: nth($ct-series-colors, $i + 1)
         
-    
+.ct-major-twelfth>svg
+  margin-top: 25px
 
 </style>

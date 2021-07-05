@@ -9,7 +9,7 @@
               p This is some content
           div.col-xs-12.col-lg-8
             div.card.has-chart
-              chartist(ratio="ct-major-second" type="Line" :data="temperatureChartData" :options="chartOptions")
+              chartist(ratio="ct-major-twelfth" type="Line" :data="temperatureChartData" :options="chartOptions")
       div.row
           div.col-xs-12.col-lg-4
             div.card
@@ -17,7 +17,7 @@
               p This is some content
           div.col-xs-12.col-lg-8
             div.card.has-chart
-              chartist(ratio="ct-major-second" type="Line" :data="humidityChartData" :options="chartOptions")
+              chartist(ratio="ct-major-twelfth" type="Line" :data="humidityChartData" :options="chartOptions")
 </template>
 <script>
 import TopBar from './TopBar.vue'
@@ -40,6 +40,7 @@ export default {
       },
       chartOptions: {
         lineSmooth: false,
+        //height: '250px',
         plugins: [ this.$chartist.plugins.legend() ]
       }
     }
