@@ -182,7 +182,6 @@ module.exports = app => {
       .query('select')
       .orderBy(["date DESC"])
       .limit(20)
-      .orderBy(["date ASC"])
       .exec().then(rows => {
         res.json(rows)
       })
