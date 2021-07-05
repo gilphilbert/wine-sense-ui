@@ -183,7 +183,7 @@ module.exports = app => {
       .orderBy(["date DESC"])
       .limit(20)
       .exec().then(rows => {
-        res.json(rows)
+        res.json(rows.reverse())
       })
   })
 
