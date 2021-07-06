@@ -181,7 +181,7 @@ module.exports = app => {
     nSQL('readings')
       .query('select')
       .orderBy(["date DESC"])
-      .limit(20)
+      .limit(200)
       .exec().then(rows => {
         res.json(rows.reverse())
       })
